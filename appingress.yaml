@@ -1,20 +1,26 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-   name: vpro-ingress
-   annotations:
-      nginx.ingress.kubernetes.io/use-regex: "true"
+  name: vpro-ingress
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt-prod
 
 spec:
-   ingressClassName: nginx
-   rules:
-   - host: devopsdev.site
-     http:
-        paths:
-        - path: /
-          pathType: Prefix
-          backend:
-             service:
-                name: vproapp-service
-                port:
-                   number: 8080
+  ingressClassName: nginx
+
+  tls:
+  - hosts:
+    - devopsdev.site
+    secretName: devopsdev-tls
+
+  rules:
+  - host: devopsdev.site
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: vproapp-service
+            port:
+              number: 8080
